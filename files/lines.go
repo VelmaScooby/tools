@@ -1,3 +1,4 @@
+//Package lines processes lines in documents
 package lines
 
 import (
@@ -13,9 +14,25 @@ import (
 
 const wrap = "\\"
 
+//Unwrap allows me to wrap long lines into more readable shorted lines
+//Example, instead of:
+//1 {{- range key, value := zip (keys			"Rat"		"Pig"					"Monkey"			"Horse")		(values		$.HR		$.TeamLead		$.Marketing		$.Dev)
+//2
+//3{{- add $team.Members $key $value}}
+//4{{- end}}
+//I can write
+//1 {{- range key, value := zip (keys			"Rat"		"Pig"					"Monkey"			"Horse") \\
+//2															(values		$.HR		$.TeamLead		$.Marketing		$.Dev)
+//3 {{- add $team.Members $key $value}}
+//4 {{- end}}
+//and "Unwrap" my templates before parsing them
+//*Unrapping keeps line numbers
+//Returns: path to a temp file with unwrapped content
+//				 function to clean up temp files
+//				 error if something went wrong
 func Unwrap(filePath string) (newFilePath string, cleanUp func(), err error) {
 
-	cleanUp = func() {}
+	cleanUp = func() {} //don't return nul function
 
 	text, err := readFile(filePath)
 	if err != nil {
